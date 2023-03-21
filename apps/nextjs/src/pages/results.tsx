@@ -7,7 +7,7 @@ const ResultsPage: React.FC<{
   songs: inferAsyncReturnType<typeof GetSongsInOrder>;
 }> = (props) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col items-center">
       <h2>Results</h2>
       {props.songs.map((song) => {
         return <SongListing song={song} />;
@@ -38,7 +38,7 @@ const GetSongsInOrder = async () => {
   });
 };
 
-const generateCountPercenrage = (song: SongResultsQuery[number]) => {
+const generateCountPercentage = (song: SongResultsQuery[number]) => {
   const { voteFor, voteAgainst } = song._count;
   const totalVotes = voteFor + voteAgainst;
   const voteForPercentage = (voteFor / totalVotes) * 100;
@@ -50,13 +50,14 @@ const generateCountPercenrage = (song: SongResultsQuery[number]) => {
 };
 
 type SongResultsQuery = inferAsyncReturnType<typeof GetSongsInOrder>;
+
 const SongListing: React.FC<{ song: SongResultsQuery }> = (props) => {
-  const { voteForPercentage, voteAgainstPercentage } = generateCountPercenrage(
+  const { voteForPercentage, voteAgainstPercentage } = generateCountPercentage(
     props.song,
   );
   return (
-    <div className="flex items-center justify-between gap-4 border-b p-2">
-      <Image src={props.song.cover} width={200} height={200} alt="Song Cover" />
+    <div className="flex w-full max-w-2xl items-center justify-between gap-4 border-b p-2">
+      <Image src={props.song.cover} width={64} height={64} alt="hello" />
       <div className="capitalize">
         {props.song.title} by {props.song.artist}
       </div>

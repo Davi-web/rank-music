@@ -17,7 +17,7 @@ const doBackFill = async () => {
   const finalChart = await Promise.all(
     chart.map(async (song, index) => {
       const { data } = await axios.get(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${song.title} ${song.artist}&key=AIzaSyCEDBX9RsosJa0mMPL3YIMFt7i-lz_2FAE`,
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${song.title} ${song.artist}&key=AIzaSyA3SpUmF2JcQ04R3RQSRNJInM6-rkFRbYA`,
       );
       return {
         title: song.title,
@@ -40,6 +40,7 @@ const doBackFill = async () => {
           artist: song.artist,
           cover: song.cover,
           rank: song.rank,
+          videoId: song.videoId,
         },
       }),
     ), // returns an array of Promises

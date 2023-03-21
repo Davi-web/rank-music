@@ -24,20 +24,19 @@ const PostCard: React.FC<{
 };
 
 const Home: NextPage = () => {
-  const [ids, setIds] = useState(() => getOptionsForVote());
+  const [ids, setIds] = useState(useMemo(() => getOptionsForVote(), []));
   const [first, second] = ids;
-  const getFirstSong = trpc.song.byId.useQuery(parseInt(first));
-  const getSecondSong = trpc.song.byId.useQuery(parseInt(second));
+  const getFirstSong = trpc.song.byId.useQuery(first);
+  const getSecondSong = trpc.song.byId.useQuery(second);
   const castVote = trpc.song.voteForSong.useMutation();
-  console.log(getFirstSong.data);
-  console.log(getSecondSong.data);
-  const router = useRouter();
 
   const voteForSong = (votedFor: number, votedAgainst: number) => {
     castVote.mutate({
       votedFor,
       votedAgainst,
     });
+    setFirstVideo(false);
+    setSecondVideo(false);
     setIds(getOptionsForVote());
   };
   const dataLoaded =
@@ -45,8 +44,15 @@ const Home: NextPage = () => {
     !getSecondSong.isLoading &&
     getFirstSong.data &&
     getSecondSong.data;
-  const { isSignedIn } = useAuth();
+  const [firstVideo, setFirstVideo] = useState(false);
+  const [secondVideo, setSecondVideo] = useState(false);
+  const showFirstVideo = () => {
+    setFirstVideo(true);
+  };
 
+  const showSecondVideo = () => {
+    setSecondVideo(true);
+  };
   return (
     <>
       <Head>
@@ -65,18 +71,21 @@ const Home: NextPage = () => {
             <Image src="/bars.svg" alt="Loading" height={200} width={200} />
           )}
           {dataLoaded && (
-            <div className="grid grid-cols-2 gap-24">
-              <div className="flex h-full w-full flex-col justify-center align-middle">
-                <a
-                  href={`https://youtube.com/results?search_query=${getFirstSong.data?.title.replace(
-                    / /g,
-                    "+",
-                  )}+${getFirstSong.data?.artist.replace(/ /g, "+")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <div className="flex flex-col gap-4 text-center">
+            <div className="grid grid-cols-3 gap-24">
+              <div className="flex h-full w-full flex-col justify-center">
+                <div className="flex flex-col gap-4 text-center">
+                  {firstVideo ? (
+                    <iframe
+                      width={200}
+                      src={`https://www.youtube.com/embed/${getFirstSong.data?.videoId}?autoplay=1`}
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="m-4 aspect-video w-full p-4"
+                    />
+                  ) : (
                     <Image
+                      onClick={showFirstVideo}
                       src={getFirstSong.data?.cover}
                       width={200}
                       height={200}
@@ -84,10 +93,11 @@ const Home: NextPage = () => {
                       className="self-center"
                       loading="lazy"
                     />
-                    <p className="text-sm">{getFirstSong.data?.title}</p>
-                    <p className="text-sm">{getFirstSong.data?.artist}</p>
-                  </div>
-                </a>
+                  )}
+                  <p className="text-sm">
+                    {getFirstSong.data?.title} by {getFirstSong.data?.artist}
+                  </p>
+                </div>
                 <button
                   onClick={() =>
                     voteForSong(
@@ -95,22 +105,27 @@ const Home: NextPage = () => {
                       getSecondSong.data?.rank,
                     )
                   }
-                  className="w-full rounded-md bg-[hsl(280,100%,70%)] px-4 py-2 text-white"
+                  className="my-4 w-full rounded-md bg-[hsl(280,100%,70%)] px-4 py-2 text-white"
                 >
                   Vote Thumbs up
                 </button>
               </div>
+              <div className="flex justify-center">vs.</div>
+
               <div className="flex w-full flex-col justify-center">
-                <a
-                  href={`https://youtube.com/results?search_query=${getSecondSong.data?.title.replace(
-                    / /g,
-                    "+",
-                  )}+${getSecondSong.data?.artist.replace(/ /g, "+")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <div className="flex w-full flex-col justify-center gap-4 text-center align-middle">
+                <div className=" flex w-full flex-col justify-center gap-4 text-center align-middle">
+                  {secondVideo ? (
+                    <iframe
+                      width={200}
+                      src={`https://www.youtube.com/embed/${getSecondSong.data?.videoId}?autoplay=1`}
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="m-4 aspect-video w-full p-4"
+                    />
+                  ) : (
                     <Image
+                      onClick={showSecondVideo}
                       src={getSecondSong.data?.cover}
                       width={200}
                       height={200}
@@ -118,11 +133,11 @@ const Home: NextPage = () => {
                       className="self-center"
                       loading="lazy"
                     />
-
-                    <p className="text-sm">{getSecondSong.data?.title}</p>
-                    <p className="text-sm">{getSecondSong.data?.artist}</p>
-                  </div>
-                </a>
+                  )}
+                  <p className="text-sm">
+                    {getSecondSong.data?.title} by {getSecondSong.data?.artist}
+                  </p>
+                </div>
                 <button
                   onClick={() =>
                     voteForSong(
@@ -130,25 +145,13 @@ const Home: NextPage = () => {
                       getSecondSong.data?.rank,
                     )
                   }
-                  className="w-full rounded-md bg-[hsl(280,100%,70%)] px-4 py-2 text-white"
+                  className="my-4 w-full rounded-md bg-[hsl(280,100%,70%)] px-4 py-2 text-white"
                 >
                   Vote Thumbs up
                 </button>
               </div>
             </div>
           )}
-
-          {/* <div className="flex h-[60vh] justify-center overflow-y-scroll px-4 text-2xl">
-            {postQuery.data ? (
-              <div className="flex flex-col gap-4">
-                {postQuery.data?.map((p) => {
-                  return <PostCard key={p.id} post={p} />;
-                })}
-              </div>
-            ) : (
-              <p>Loading..</p>
-            )}
-          </div> */}
         </div>
       </main>
     </>
@@ -171,8 +174,7 @@ const AuthShowcase: React.FC = () => {
           <p className="text-center text-2xl text-white">
             {secretMessage && (
               <span>
-                {" "}
-                {secretMessage} click the user button!
+                {secretMessage}
                 <br />
               </span>
             )}

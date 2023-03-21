@@ -37,6 +37,7 @@ model Song {
     artist   String @db.Text
     rank     Int @db.Int
     cover   String @db.Text @default("")
+    videoId String @db.Text @default("")
     voteFor Vote[] @relation("votedFor")
     voteAgainst Vote[] @relation("votedAgainst")
 }
