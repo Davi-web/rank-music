@@ -14,6 +14,9 @@ const config = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
+  images: {
+    domains: ["charts-static.billboard.com"],
+  },
 };
 
 export default config;
