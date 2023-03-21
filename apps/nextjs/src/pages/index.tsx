@@ -27,10 +27,10 @@ const Home: NextPage = () => {
   const [ids, setIds] = useState(useMemo(() => getOptionsForVote(), []));
   const [first, second] = ids;
   const getFirstSong = trpc.song.byId.useQuery({
-    id: first,
+    id: first || 1,
   });
   const getSecondSong = trpc.song.byId.useQuery({
-    id: second,
+    id: second || 2,
   });
   const castVote = trpc.song.voteForSong.useMutation();
 
