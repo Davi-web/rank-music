@@ -23,9 +23,11 @@ export const songRouter = router({
     //get the current date formatted as YYYY-MM-DD
     return ctx.prisma.song.findMany();
   }),
-  byId: protectedProcedure.input(z.number()).query(({ ctx, input }) => {
-    return ctx.prisma.song.findFirst({ where: { id: input } });
-  }),
+  byId: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.song.findFirst({ where: { id: input.id } });
+    }),
   voteForSong: protectedProcedure
     .input(
       z.object({

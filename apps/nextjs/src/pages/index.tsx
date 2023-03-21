@@ -26,8 +26,12 @@ const PostCard: React.FC<{
 const Home: NextPage = () => {
   const [ids, setIds] = useState(useMemo(() => getOptionsForVote(), []));
   const [first, second] = ids;
-  const getFirstSong = trpc.song.byId.useQuery(first);
-  const getSecondSong = trpc.song.byId.useQuery(second);
+  const getFirstSong = trpc.song.byId.useQuery({
+    id: first,
+  });
+  const getSecondSong = trpc.song.byId.useQuery({
+    id: second,
+  });
   const castVote = trpc.song.voteForSong.useMutation();
 
   const voteForSong = (votedFor: number, votedAgainst: number) => {
