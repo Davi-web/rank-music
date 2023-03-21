@@ -9,8 +9,8 @@ const ResultsPage: React.FC<{
   return (
     <div className="flex flex-col items-center">
       <h2>Results</h2>
-      {props.songs.map((song) => {
-        return <SongListing song={song} />;
+      {props.songs.map((song, index) => {
+        return <SongListing song={song} key={index} />;
       })}
     </div>
   );

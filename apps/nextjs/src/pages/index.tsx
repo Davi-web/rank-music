@@ -34,7 +34,11 @@ const Home: NextPage = () => {
   });
   const castVote = trpc.song.voteForSong.useMutation();
 
-  const voteForSong = (votedFor: number, votedAgainst: number) => {
+  const voteForSong = (
+    votedFor: number | undefined,
+    votedAgainst: number | undefined,
+  ) => {
+    if (votedFor === undefined || votedAgainst === undefined) return;
     castVote.mutate({
       votedFor,
       votedAgainst,
@@ -46,8 +50,11 @@ const Home: NextPage = () => {
   const dataLoaded =
     !getFirstSong.isLoading &&
     !getSecondSong.isLoading &&
-    getFirstSong.data &&
-    getSecondSong.data;
+    getFirstSong.data !== null &&
+    getSecondSong.data !== null &&
+    getFirstSong.data !== undefined &&
+    getSecondSong.data !== undefined;
+
   const [firstVideo, setFirstVideo] = useState(false);
   const [secondVideo, setSecondVideo] = useState(false);
   const showFirstVideo = () => {
@@ -80,17 +87,18 @@ const Home: NextPage = () => {
                 <div className="flex flex-col gap-4 text-center">
                   {firstVideo ? (
                     <iframe
-                      width={200}
-                      src={`https://www.youtube.com/embed/${getFirstSong.data?.videoId}?autoplay=1`}
+                      width={400}
+                      src={`https://www.youtube.com/embed/${getFirstSong.data?.videoId}?autoplay=1&fullscreen=1`}
                       title="YouTube video player"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
+                      frameBorder={0}
                       className="m-4 aspect-video w-full p-4"
                     />
                   ) : (
                     <Image
                       onClick={showFirstVideo}
-                      src={getFirstSong.data?.cover}
+                      src={getFirstSong.data?.cover!}
                       width={200}
                       height={200}
                       alt="Song Cover"
@@ -130,7 +138,7 @@ const Home: NextPage = () => {
                   ) : (
                     <Image
                       onClick={showSecondVideo}
-                      src={getSecondSong.data?.cover}
+                      src={getSecondSong.data?.cover!}
                       width={200}
                       height={200}
                       alt="Song Cover"
