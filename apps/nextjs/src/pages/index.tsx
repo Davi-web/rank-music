@@ -234,6 +234,7 @@ const Home: NextPage = () => {
                   userButtonAvatarBox: {
                     width: "2rem",
                     height: "2rem",
+                    borderRadius: "50%",
                   },
                 },
               }}
