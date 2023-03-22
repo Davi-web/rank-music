@@ -45,7 +45,7 @@ const ResultsPage: React.FC<{
     <div className=" to-[[hsl(280,100%,70%)] flex flex-col  items-center bg-gradient-to-b from-[#6615d7] bg-fixed ">
       <table className=" m-4 table-auto rounded-tl-full rounded-br-full border-dotted  bg-gradient-to-b from-green-300 to-green-50 bg-fixed">
         <thead className=" ">
-          <tr className="font-robotoMono bg-green-200 text-center ">
+          <tr className="font-robotoMono text-center font-bold text-rose-400 sm:text-2xl ">
             <th className="px-8">Rankings</th>
             <th className="px-8">Billboards Rankings</th>
             <th className="px-8">Cover</th>
@@ -59,7 +59,7 @@ const ResultsPage: React.FC<{
           {props.songs.map((song, index) => {
             return (
               <tr
-                className="md:text-md font-robotoMono sm:text-md text-center text-xs font-bold font-medium font-black text-rose-400 sm:text-2xl"
+                className="md:text-md font-robotoMono sm:text-md text-center text-xs font-bold text-rose-400 sm:text-2xl"
                 key={index}
               >
                 <td className="">{index + 1}</td>
@@ -70,6 +70,7 @@ const ResultsPage: React.FC<{
                     width={100}
                     height={100}
                     alt="hello"
+                    loading="lazy"
                     className="flex self-center justify-self-center rounded-full"
                   />
                 </td>
