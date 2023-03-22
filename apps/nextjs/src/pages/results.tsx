@@ -43,40 +43,62 @@ const ResultsPage: React.FC<{
 }> = (props) => {
   return (
     <div className=" to-[[hsl(280,100%,70%)] flex flex-col  items-center bg-gradient-to-b from-[#6615d7] bg-fixed ">
-      <table className=" m-4 table-auto rounded-tl-full rounded-br-full border-dotted  bg-gradient-to-b from-green-300 to-green-50 bg-fixed">
-        <thead className=" ">
-          <tr className="font-robotoMono text-center font-bold text-rose-400 sm:text-2xl ">
-            <th className="px-8">Rankings</th>
-            <th className="px-8">Billboards Rankings</th>
-            <th className="px-8">Cover</th>
-            <th className="px-8">Song</th>
-            <th className="px-8">Artist</th>
-            <th className="px-8">Total Votes</th>
-            <th className="px-8">Chosen Percentage</th>
+      <table className=" m-4 table-auto rounded-tl-full rounded-br-full  bg-gradient-to-b from-green-300 to-green-50 bg-fixed">
+        <thead className="border-b-[1px] border-dashed border-rose-400 ">
+          <tr className="font-robotoMono text-center font-bold text-rose-400 sm:text-2xl  ">
+            <th className="border-r-[1px] border-dashed border-rose-400 px-8">
+              Rankings
+            </th>
+            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
+              Billboards Rankings
+            </th>
+            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
+              Cover
+            </th>
+            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
+              Song
+            </th>
+            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
+              Artist
+            </th>
+            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
+              Total Votes
+            </th>
+            <th className=" px-8 ">Chosen Percentage</th>
           </tr>
         </thead>
         <tbody>
           {props.songs.map((song, index) => {
             return (
               <tr
-                className="md:text-md font-robotoMono sm:text-md text-center text-xs font-bold text-rose-400 sm:text-2xl"
+                className="md:text-md font-robotoMono sm:text-md border-b-[1px] border-dashed border-rose-400 text-center text-xs font-semibold  text-rose-400 sm:text-lg"
                 key={index}
               >
-                <td className="">{index + 1}</td>
-                <td className="">{song.rank}</td>
-                <td className="self-center">
+                <td className="border-r-[1px] border-dashed border-rose-400">
+                  {index + 1}
+                </td>
+                <td className="border-r-[1px] border-dashed border-rose-400">
+                  {song.rank}
+                </td>
+                <td className="flex justify-center border-r-[1px] border-dashed border-rose-400">
                   <Image
                     src={song.cover}
                     width={100}
                     height={100}
                     alt="hello"
                     loading="lazy"
-                    className="flex self-center justify-self-center rounded-full"
+                    className=" m-4 rounded-full shadow-md"
                   />
                 </td>
-                <td className="p-4">{song.title}</td>
-                <td className="">{song.artist}</td>
-                <td className="">{song._count.voteFor}</td>
+                <td className="border-r-[1px] border-dashed border-rose-400">
+                  {song.title}
+                </td>
+                <td className="border-r-[1px] border-dashed border-rose-400">
+                  {song.artist}
+                </td>
+                <td className="border-r-[1px] border-dashed border-rose-400">
+                  {song._count.voteFor}
+                </td>
                 <td className="">
                   {generateCountPercentage(song).toFixed(2)}%
                 </td>

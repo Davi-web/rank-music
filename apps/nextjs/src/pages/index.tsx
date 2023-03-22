@@ -112,7 +112,7 @@ const Home: NextPage = () => {
                       title="YouTube video player"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      className="m-4 aspect-video  self-center p-4"
+                      className="m-4 aspect-video  self-center rounded-3xl p-4"
                     />
                   ) : (
                     <Image
@@ -123,11 +123,11 @@ const Home: NextPage = () => {
                       alt="Song Cover"
                       className={`${
                         firstVideo || secondVideo ? "" : "animate-bounce"
-                      } self-center`}
+                      } m-4 self-center rounded-3xl p-4`}
                       loading="lazy"
                     />
                   )}
-                  <p className="font-robotoMono text-sm italic sm:text-lg">
+                  <p className="font-robotoMono text-sm font-bold font-semibold text-rose-400 sm:text-lg">
                     {songPair.firstSong?.title} by {songPair.firstSong?.artist}
                   </p>
                 </div>
@@ -137,7 +137,7 @@ const Home: NextPage = () => {
                       voteForSong(songPair.firstSong?.rank);
                     }
                   }}
-                  className="gr font-robotoMono my-4 w-full rounded-md bg-[hsl(280,100%,75%)] px-4 py-2 text-lg text-white"
+                  className=" font-robotoMono my-4 w-full rounded-md bg-[hsl(280,100%,75%)] px-4 py-2 font-bold text-white"
                 >
                   Vote Thumbs up
                 </button>
@@ -153,7 +153,7 @@ const Home: NextPage = () => {
                       src={`https://www.youtube.com/embed/${songPair.secondSong?.videoId}?autoplay=1`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      className="m-4 aspect-video self-center p-4"
+                      className="m-4 aspect-video self-center rounded-3xl p-4"
                     />
                   ) : (
                     <Image
@@ -164,11 +164,11 @@ const Home: NextPage = () => {
                       alt="Song Cover"
                       className={`${
                         firstVideo || secondVideo ? "" : "animate-bounce"
-                      } self-center`}
+                      } m-4 self-center rounded-3xl p-4`}
                       loading="lazy"
                     />
                   )}
-                  <p className=" font-robotoMono text-sm sm:text-lg">
+                  <p className=" font-robotoMono text-sm font-semibold text-rose-400 sm:text-lg">
                     {songPair.secondSong?.title} by{" "}
                     {songPair.secondSong?.artist}
                   </p>
@@ -179,7 +179,7 @@ const Home: NextPage = () => {
                       voteForSong(songPair.secondSong?.rank);
                     }
                   }}
-                  className="font-robotoMono my-4 w-full rounded-md bg-[hsl(280,100%,75%)] px-4 py-2 text-white"
+                  className="font-robotoMono my-4 w-full rounded-md bg-[hsl(280,100%,75%)] px-4 py-2 font-bold text-white"
                 >
                   Vote Thumbs up
                 </button>
@@ -217,7 +217,7 @@ const AuthShowcase: React.FC = () => {
       </div>
       {isSignedIn && (
         <>
-          <p className="font-robotoMono text-center text-2xl text-white">
+          <p className="font-robotoMono text-center text-2xl font-semibold text-rose-400">
             {secretMessage && (
               <span>
                 {secretMessage}
@@ -228,7 +228,7 @@ const AuthShowcase: React.FC = () => {
         </>
       )}
       {!isSignedIn && (
-        <p className="text-center text-2xl text-white">
+        <p className="text-center text-2xl text-rose-400">
           <Link href="/sign-in">Sign In</Link>
         </p>
       )}
