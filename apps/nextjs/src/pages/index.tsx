@@ -73,9 +73,14 @@ const Home: NextPage = () => {
           name="description"
           content="Vote on the best song from the Billboards Top 100 songs"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap"
+          rel="stylesheet"
+        />
       </Head>
-      <main className="to-[[hsl(280,100%,70%)] flex h-screen w-screen flex-col items-center bg-gradient-to-b from-[#6615d7]  text-white">
+      <main className=" to-[[hsl(280,100%,70%)] flex h-screen w-screen flex-col items-center bg-gradient-to-b from-[#6615d7] text-white">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
             Billboard's{" "}
@@ -88,7 +93,7 @@ const Home: NextPage = () => {
               alt="Loading"
               height={200}
               width={200}
-              className=" animate-ping self-center"
+              className=" animate-fade-in animate-ping self-center"
             />
           )}
           {songPair && (
@@ -103,7 +108,6 @@ const Home: NextPage = () => {
                       title="YouTube video player"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      frameBorder={0}
                       className="m-4 aspect-video  self-center p-4"
                     />
                   ) : (
@@ -113,11 +117,13 @@ const Home: NextPage = () => {
                       width={200}
                       height={200}
                       alt="Song Cover"
-                      className=" animate-bounce self-center"
+                      className={`${
+                        firstVideo || secondVideo ? "" : "animate-bounce"
+                      } self-center`}
                       loading="lazy"
                     />
                   )}
-                  <p className="text-sm italic sm:text-lg">
+                  <p className="font-robotoMono text-sm italic sm:text-lg">
                     {songPair.firstSong?.title} by {songPair.firstSong?.artist}
                   </p>
                 </div>
@@ -127,7 +133,7 @@ const Home: NextPage = () => {
                       voteForSong(songPair.firstSong?.rank);
                     }
                   }}
-                  className="gr my-4 w-full rounded-md bg-[hsl(280,100%,75%)] px-4 py-2 text-lg text-white"
+                  className="gr font-robotoMono my-4 w-full rounded-md bg-[hsl(280,100%,75%)] px-4 py-2 text-lg text-white"
                 >
                   Vote Thumbs up
                 </button>
@@ -152,11 +158,13 @@ const Home: NextPage = () => {
                       width={200}
                       height={200}
                       alt="Song Cover"
-                      className="animate-bounce self-center"
+                      className={`${
+                        firstVideo || secondVideo ? "" : "animate-bounce"
+                      } self-center`}
                       loading="lazy"
                     />
                   )}
-                  <p className="text-sm italic sm:text-lg">
+                  <p className=" font-robotoMono text-sm sm:text-lg">
                     {songPair.secondSong?.title} by{" "}
                     {songPair.secondSong?.artist}
                   </p>
@@ -167,7 +175,7 @@ const Home: NextPage = () => {
                       voteForSong(songPair.secondSong?.rank);
                     }
                   }}
-                  className="my-4 w-full rounded-md bg-[hsl(280,100%,75%)] px-4 py-2 text-white"
+                  className="font-robotoMono my-4 w-full rounded-md bg-[hsl(280,100%,75%)] px-4 py-2 text-white"
                 >
                   Vote Thumbs up
                 </button>
@@ -193,7 +201,7 @@ const AuthShowcase: React.FC = () => {
     <div className="flex flex-col items-center justify-center gap-4">
       {isSignedIn && (
         <>
-          <p className="text-center text-2xl text-white">
+          <p className="font-robotoMono text-center text-2xl text-white">
             {secretMessage && (
               <span>
                 {secretMessage}

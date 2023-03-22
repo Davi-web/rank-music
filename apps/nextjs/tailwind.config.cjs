@@ -4,6 +4,9 @@ module.exports = {
   darkMode: "false",
 
   theme: {
+    fontFamily: {
+      robotoMono: ["Roboto Mono", "monospace"],
+    },
     extend: {
       keyframes: {
         "fade-in": {

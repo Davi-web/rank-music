@@ -42,38 +42,41 @@ const ResultsPage: React.FC<{
   songs: inferAsyncReturnType<typeof GetSongsInOrder>;
 }> = (props) => {
   return (
-    <div className="to-[[hsl(280,100%,70%)] flex flex-col  items-center bg-red-200 bg-gradient-to-b from-[#6615d7]">
-      <table className=" m-4 w-48 table-auto rounded-tl-full rounded-br-full border-dotted  bg-green-200 sm:max-w-3xl ">
-        <thead className="rounded-full bg-[hsl(280,100%,70%)]">
-          <tr className="text-center text-xs text-slate-700">
-            <th className="p-4">Rankings</th>
-            <th className="p-4">Billboards Rankings</th>
-            <th className="p-4">Cover</th>
-            <th className="p-4">Song</th>
-            <th className="p-4">Artist</th>
-            <th className="p-4">Total Votes</th>
-            <th className="p-4">Chosen Percentage</th>
+    <div className=" to-[[hsl(280,100%,70%)] flex flex-col  items-center bg-gradient-to-b from-[#6615d7] bg-fixed ">
+      <table className=" m-4 table-auto rounded-tl-full rounded-br-full border-dotted  bg-gradient-to-b from-green-300 to-green-50 bg-fixed">
+        <thead className=" ">
+          <tr className="font-robotoMono bg-green-200 text-center ">
+            <th className="px-8">Rankings</th>
+            <th className="px-8">Billboards Rankings</th>
+            <th className="px-8">Cover</th>
+            <th className="px-8">Song</th>
+            <th className="px-8">Artist</th>
+            <th className="px-8">Total Votes</th>
+            <th className="px-8">Chosen Percentage</th>
           </tr>
         </thead>
         <tbody>
           {props.songs.map((song, index) => {
             return (
-              <tr className="md:text-md m-4 p-8 text-xs" key={index}>
-                <td className="p-4 text-left text-xs">{index + 1}</td>
-                <td className="p-4 text-left text-xs">{song.rank}</td>
-                <td className="p-4 text-left text-xs">
+              <tr
+                className="md:text-md font-robotoMono sm:text-md text-center text-xs font-bold font-medium font-black text-rose-400 sm:text-2xl"
+                key={index}
+              >
+                <td className="">{index + 1}</td>
+                <td className="">{song.rank}</td>
+                <td className="self-center">
                   <Image
                     src={song.cover}
-                    width={64}
-                    height={64}
+                    width={100}
+                    height={100}
                     alt="hello"
-                    className="rounded-full"
+                    className="flex self-center justify-self-center rounded-full"
                   />
                 </td>
-                <td className="p-4 text-left text-xs">{song.title}</td>
-                <td className="p-4 text-left text-xs">{song.artist}</td>
-                <td className="p-4 text-left text-xs">{song._count.voteFor}</td>
-                <td className="p-4 text-left text-xs">
+                <td className="p-4">{song.title}</td>
+                <td className="">{song.artist}</td>
+                <td className="">{song._count.voteFor}</td>
+                <td className="">
                   {generateCountPercentage(song).toFixed(2)}%
                 </td>
               </tr>
@@ -93,7 +96,7 @@ const SongListing: React.FC<{
 }> = ({ song, rank }) => {
   const voteForPercentage = generateCountPercentage(song);
   return (
-    <div className="flex w-full max-w-3xl items-center justify-between gap-4 border-b p-2 text-xs">
+    <div className="flex w-full items-center justify-between gap-4 border-b p-2 text-xs">
       <Image src={song.cover} width={64} height={64} alt="hello" />
       <div className="flex justify-center text-left">#{rank + 1}</div>
       <div className="w-full capitalize">
