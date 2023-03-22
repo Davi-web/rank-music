@@ -203,6 +203,18 @@ const AuthShowcase: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
+      <div className="flex items-center justify-center">
+        <UserButton
+          appearance={{
+            elements: {
+              userButtonAvatarBox: {
+                width: "3rem",
+                height: "3rem",
+              },
+            },
+          }}
+        />
+      </div>
       {isSignedIn && (
         <>
           <p className="font-robotoMono text-center text-2xl text-white">
@@ -213,18 +225,6 @@ const AuthShowcase: React.FC = () => {
               </span>
             )}
           </p>
-          <div className="flex items-center justify-center">
-            <UserButton
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: {
-                    width: "3rem",
-                    height: "3rem",
-                  },
-                },
-              }}
-            />
-          </div>
         </>
       )}
       {!isSignedIn && (
