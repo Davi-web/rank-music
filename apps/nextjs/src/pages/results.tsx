@@ -42,17 +42,17 @@ const ResultsPage: React.FC<{
   songs: inferAsyncReturnType<typeof GetSongsInOrder>;
 }> = (props) => {
   return (
-    <div className="flex flex-col items-center bg-red-200">
-      <table className=" m-4 w-48 table-auto rounded-tl-full rounded-br-full border-dotted  bg-red-300 sm:max-w-3xl ">
-        <thead className="rounded-full bg-indigo-100">
-          <tr>
-            <th className="p-4 text-left text-xs">Rankings</th>
-            <th className="p-4 text-left text-xs">Billboards Rankings</th>
-            <th className="p-4 text-left text-xs">Cover</th>
-            <th className="p-4 text-left text-xs">Song</th>
-            <th className="p-4 text-left text-xs">Artist</th>
-            <th className="p-4 text-left text-xs">Total Votes</th>
-            <th className="p-4 text-left text-xs">Chosen Percentage</th>
+    <div className="to-[[hsl(280,100%,70%)] flex flex-col  items-center bg-red-200 bg-gradient-to-b from-[#6615d7]">
+      <table className=" m-4 w-48 table-auto rounded-tl-full rounded-br-full border-dotted  bg-green-200 sm:max-w-3xl ">
+        <thead className="rounded-full bg-[hsl(280,100%,70%)]">
+          <tr className="text-center text-xs text-slate-700">
+            <th className="p-4">Rankings</th>
+            <th className="p-4">Billboards Rankings</th>
+            <th className="p-4">Cover</th>
+            <th className="p-4">Song</th>
+            <th className="p-4">Artist</th>
+            <th className="p-4">Total Votes</th>
+            <th className="p-4">Chosen Percentage</th>
           </tr>
         </thead>
         <tbody>
