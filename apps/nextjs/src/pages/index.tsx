@@ -228,6 +228,7 @@ const Home: NextPage = () => {
             >
               GitHub
             </a>
+            <div className="font-robotoMono text-rose-400">|</div>
             <UserButton
               appearance={{
                 elements: {
@@ -235,6 +236,15 @@ const Home: NextPage = () => {
                     width: "2rem",
                     height: "2rem",
                     borderRadius: "50%",
+                  },
+                  userButtonBox: {
+                    width: "2rem",
+                    height: "2rem",
+                    borderRadius: "50%",
+                  },
+                  userButtonAvatarImage: {
+                    width: "2rem",
+                    height: "2rem",
                   },
                 },
               }}

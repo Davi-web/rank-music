@@ -64,7 +64,7 @@ const ResultsPage: React.FC<{
             <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
               Total Votes
             </th>
-            <th className=" px-8 ">Chosen Percentage</th>
+            <th className=" px-8 ">Pick Rate</th>
           </tr>
         </thead>
         <tbody>
