@@ -5,9 +5,7 @@ import type { inferProcedureOutput } from "@trpc/server";
 import type { AppRouter } from "@acme/api";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { useRouter } from "next/router";
-import { getOptionsForVote } from "../utils/getRandomSongs";
+import { useState } from "react";
 import Image from "next/image";
 
 const PostCard: React.FC<{
@@ -24,45 +22,48 @@ const PostCard: React.FC<{
 };
 
 const Home: NextPage = () => {
-  const [ids, setIds] = useState(useMemo(() => getOptionsForVote(), []));
-  const [first, second] = ids;
-  const getFirstSong = trpc.song.byId.useQuery({
-    id: first || 1,
-  });
-  const getSecondSong = trpc.song.byId.useQuery({
-    id: second || 2,
-  });
+  const {
+    data: songPair,
+    refetch,
+    isLoading,
+  } = trpc.song.getTwoSongs.useQuery();
+
   const castVote = trpc.song.voteForSong.useMutation();
 
-  const voteForSong = (
-    votedFor: number | undefined,
-    votedAgainst: number | undefined,
-  ) => {
-    if (votedFor === undefined || votedAgainst === undefined) return;
-    castVote.mutate({
-      votedFor,
-      votedAgainst,
-    });
+  const voteForSong = async (votedFor: number) => {
+    if (!votedFor) return;
+    if (!songPair?.secondSong?.rank || !songPair?.firstSong?.rank) return;
+
+    if (votedFor === songPair?.firstSong?.rank) {
+      // If voted for 1st pokemon, fire voteFor with first ID
+      castVote.mutate({
+        votedFor: songPair?.firstSong?.rank,
+        votedAgainst: songPair?.secondSong?.rank,
+      });
+    } else {
+      // else fire voteFor with second ID
+      castVote.mutate({
+        votedFor: songPair?.secondSong?.rank,
+        votedAgainst: songPair?.firstSong?.rank,
+      });
+    }
+
     setFirstVideo(false);
     setSecondVideo(false);
-    setIds(getOptionsForVote());
+    refetch();
   };
-  const dataLoaded =
-    !getFirstSong.isLoading &&
-    !getSecondSong.isLoading &&
-    getFirstSong.data !== null &&
-    getSecondSong.data !== null &&
-    getFirstSong.data !== undefined &&
-    getSecondSong.data !== undefined;
 
   const [firstVideo, setFirstVideo] = useState(false);
   const [secondVideo, setSecondVideo] = useState(false);
+
   const showFirstVideo = () => {
     setFirstVideo(true);
+    setSecondVideo(false);
   };
 
   const showSecondVideo = () => {
     setSecondVideo(true);
+    setFirstVideo(false);
   };
   return (
     <>
@@ -78,45 +79,52 @@ const Home: NextPage = () => {
             <span className="text-[hsl(280,100%,70%)]">Top 100</span> Songs
           </h1>
           <AuthShowcase />
-          {!dataLoaded && (
-            <Image src="/bars.svg" alt="Loading" height={200} width={200} />
+          {isLoading && (
+            <Image
+              src="/bars.svg"
+              alt="Loading"
+              height={200}
+              width={200}
+              className="animate-fade-in self-center"
+              loading="lazy"
+            />
           )}
-          {dataLoaded && (
-            <div className="grid grid-cols-3 gap-24">
+          {songPair && (
+            <div className="animate-fade-in grid grid-cols-3 gap-24 ">
               <div className="flex h-full w-full flex-col justify-center">
-                <div className="flex flex-col gap-4 text-center">
+                <div className="flex flex-col gap-4 text-center transition-opacity">
                   {firstVideo ? (
                     <iframe
                       width={400}
-                      src={`https://www.youtube.com/embed/${getFirstSong.data?.videoId}?autoplay=1&fullscreen=1`}
+                      height={200}
+                      src={`https://www.youtube.com/embed/${songPair.firstSong?.videoId}?autoplay=1`}
                       title="YouTube video player"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       frameBorder={0}
-                      className="m-4 aspect-video w-full p-4"
+                      className="m-4 aspect-video h-64 w-full w-96 self-center p-4"
                     />
                   ) : (
                     <Image
                       onClick={showFirstVideo}
-                      src={getFirstSong.data?.cover!}
+                      src={`${songPair.firstSong?.cover}`}
                       width={200}
                       height={200}
                       alt="Song Cover"
-                      className="self-center"
+                      className="animate-bounce self-center"
                       loading="lazy"
                     />
                   )}
                   <p className="text-sm">
-                    {getFirstSong.data?.title} by {getFirstSong.data?.artist}
+                    {songPair.firstSong?.title} by {songPair.firstSong?.artist}
                   </p>
                 </div>
                 <button
-                  onClick={() =>
-                    voteForSong(
-                      getFirstSong.data?.rank,
-                      getSecondSong.data?.rank,
-                    )
-                  }
+                  onClick={() => {
+                    if (songPair.firstSong?.rank) {
+                      voteForSong(songPair.firstSong?.rank);
+                    }
+                  }}
                   className="my-4 w-full rounded-md bg-[hsl(280,100%,70%)] px-4 py-2 text-white"
                 >
                   Vote Thumbs up
@@ -128,35 +136,35 @@ const Home: NextPage = () => {
                 <div className=" flex w-full flex-col justify-center gap-4 text-center align-middle">
                   {secondVideo ? (
                     <iframe
-                      width={200}
-                      src={`https://www.youtube.com/embed/${getSecondSong.data?.videoId}?autoplay=1`}
-                      title="YouTube video player"
+                      width={400}
+                      height={200}
+                      src={`https://www.youtube.com/embed/${songPair.secondSong?.videoId}?autoplay=1`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      className="m-4 aspect-video w-full p-4"
+                      className="m-4 aspect-video h-64 w-96 w-full self-center p-4"
                     />
                   ) : (
                     <Image
                       onClick={showSecondVideo}
-                      src={getSecondSong.data?.cover!}
+                      src={`${songPair.secondSong?.cover}`}
                       width={200}
                       height={200}
                       alt="Song Cover"
-                      className="self-center"
+                      className="animate-bounce self-center"
                       loading="lazy"
                     />
                   )}
                   <p className="text-sm">
-                    {getSecondSong.data?.title} by {getSecondSong.data?.artist}
+                    {songPair.secondSong?.title} by{" "}
+                    {songPair.secondSong?.artist}
                   </p>
                 </div>
                 <button
-                  onClick={() =>
-                    voteForSong(
-                      getFirstSong.data?.rank,
-                      getSecondSong.data?.rank,
-                    )
-                  }
+                  onClick={() => {
+                    if (songPair.secondSong?.rank) {
+                      voteForSong(songPair.secondSong?.rank);
+                    }
+                  }}
                   className="my-4 w-full rounded-md bg-[hsl(280,100%,70%)] px-4 py-2 text-white"
                 >
                   Vote Thumbs up

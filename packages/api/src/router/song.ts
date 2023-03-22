@@ -1,9 +1,6 @@
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
-import { getChart, listCharts } from "billboard-top-100";
-import { search, settings } from "youtube-video-search";
-import * as yt from "youtube-search-without-api-key";
-import axios from "axios";
+import { getOptionsForVote } from "../../../../apps/nextjs/src/utils/getRandomSongs";
 
 interface Song {
   title: string;
@@ -23,11 +20,21 @@ export const songRouter = router({
     //get the current date formatted as YYYY-MM-DD
     return ctx.prisma.song.findMany();
   }),
-  byId: protectedProcedure
-    .input(z.object({ id: z.number() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.song.findFirst({ where: { id: input.id } });
-    }),
+  getTwoSongs: protectedProcedure.query(async ({ ctx }) => {
+    const [first, second] = getOptionsForVote();
+    if (first !== undefined && second !== undefined) {
+      const bothSongs = await ctx.prisma.song.findMany({
+        where: { id: { in: [first, second] } },
+      });
+      if (bothSongs.length !== 2) throw new Error("Failed to find two songs");
+      return {
+        firstSong: bothSongs[0],
+        secondSong: bothSongs[1],
+      };
+    } else {
+      throw new Error("Failed to find two Songs");
+    }
+  }),
   voteForSong: protectedProcedure
     .input(
       z.object({

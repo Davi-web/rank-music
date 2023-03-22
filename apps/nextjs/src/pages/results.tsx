@@ -3,18 +3,8 @@ import { prisma } from "../../../../packages/db/index";
 import React from "react";
 import { inferAsyncReturnType } from "@trpc/server";
 import Image from "next/image";
-const ResultsPage: React.FC<{
-  songs: inferAsyncReturnType<typeof GetSongsInOrder>;
-}> = (props) => {
-  return (
-    <div className="flex flex-col items-center">
-      <h2>Results</h2>
-      {props.songs.map((song, index) => {
-        return <SongListing song={song} key={index} />;
-      })}
-    </div>
-  );
-};
+import { useTable } from "react-table";
+
 const GetSongsInOrder = async () => {
   return await prisma.song.findMany({
     orderBy: {
@@ -42,28 +32,76 @@ const generateCountPercentage = (song: SongResultsQuery[number]) => {
   const { voteFor, voteAgainst } = song._count;
   const totalVotes = voteFor + voteAgainst;
   const voteForPercentage = (voteFor / totalVotes) * 100;
-  const voteAgainstPercentage = (voteAgainst / totalVotes) * 100;
-  return {
-    voteForPercentage,
-    voteAgainstPercentage,
-  };
+  if (voteFor + voteAgainst === 0) {
+    return 0;
+  }
+  return voteForPercentage;
+};
+
+const ResultsPage: React.FC<{
+  songs: inferAsyncReturnType<typeof GetSongsInOrder>;
+}> = (props) => {
+  return (
+    <div className="flex flex-col items-center bg-red-200">
+      <table className=" m-4 w-48 table-auto rounded-tl-full rounded-br-full border-dotted  bg-red-300 sm:max-w-3xl ">
+        <thead className="rounded-full bg-indigo-100">
+          <tr>
+            <th className="p-4 text-left text-xs">Rankings</th>
+            <th className="p-4 text-left text-xs">Billboards Rankings</th>
+            <th className="p-4 text-left text-xs">Cover</th>
+            <th className="p-4 text-left text-xs">Song</th>
+            <th className="p-4 text-left text-xs">Artist</th>
+            <th className="p-4 text-left text-xs">Total Votes</th>
+            <th className="p-4 text-left text-xs">Chosen Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.songs.map((song, index) => {
+            return (
+              <tr className="md:text-md m-4 p-8 text-xs" key={index}>
+                <td className="p-4 text-left text-xs">{index + 1}</td>
+                <td className="p-4 text-left text-xs">{song.rank}</td>
+                <td className="p-4 text-left text-xs">
+                  <Image
+                    src={song.cover}
+                    width={64}
+                    height={64}
+                    alt="hello"
+                    className="rounded-full"
+                  />
+                </td>
+                <td className="p-4 text-left text-xs">{song.title}</td>
+                <td className="p-4 text-left text-xs">{song.artist}</td>
+                <td className="p-4 text-left text-xs">{song._count.voteFor}</td>
+                <td className="p-4 text-left text-xs">
+                  {generateCountPercentage(song).toFixed(2)}%
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 type SongResultsQuery = inferAsyncReturnType<typeof GetSongsInOrder>;
 
-const SongListing: React.FC<{ song: SongResultsQuery }> = (props) => {
-  const { voteForPercentage, voteAgainstPercentage } = generateCountPercentage(
-    props.song,
-  );
+const SongListing: React.FC<{
+  song: SongResultsQuery[number];
+  rank: number;
+}> = ({ song, rank }) => {
+  const voteForPercentage = generateCountPercentage(song);
   return (
-    <div className="flex w-full max-w-2xl items-center justify-between gap-4 border-b p-2">
-      <Image src={props.song.cover} width={64} height={64} alt="hello" />
-      <div className="capitalize">
-        {props.song.title} by {props.song.artist}
+    <div className="flex w-full max-w-3xl items-center justify-between gap-4 border-b p-2 text-xs">
+      <Image src={song.cover} width={64} height={64} alt="hello" />
+      <div className="flex justify-center text-left">#{rank + 1}</div>
+      <div className="w-full capitalize">
+        {song.title} by {song.artist}
       </div>
       <div>
         <div>Vote For: {voteForPercentage}%</div>
-        <div>Vote Against: {voteAgainstPercentage}%</div>
+        <div>Vote Against:{song.rank}%</div>
       </div>
     </div>
   );
@@ -73,12 +111,11 @@ export default ResultsPage;
 
 export const getStaticProps: GetServerSideProps = async () => {
   const songsOrderedByVote = await GetSongsInOrder();
-  console.log("songs", songsOrderedByVote);
-
+  const DAY_IN_SECONDS = 60 * 60 * 24;
   return {
     props: {
       songs: songsOrderedByVote,
     },
-    revalidate: 60,
+    revalidate: DAY_IN_SECONDS,
   };
 };
