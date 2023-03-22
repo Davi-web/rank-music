@@ -5,8 +5,9 @@ import type { inferProcedureOutput } from "@trpc/server";
 import type { AppRouter } from "@acme/api";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const PostCard: React.FC<{
   post: inferProcedureOutput<AppRouter["post"]["all"]>[number];
@@ -29,6 +30,13 @@ const Home: NextPage = () => {
   } = trpc.song.getTwoSongs.useQuery();
 
   const castVote = trpc.song.voteForSong.useMutation();
+  const router = useRouter();
+  const { isSignedIn } = useAuth();
+  useEffect(() => {
+    if (!isSignedIn) {
+      router.push("/sign-in");
+    }
+  }, [isSignedIn]);
 
   const voteForSong = async (votedFor: number) => {
     if (!votedFor) return;
@@ -65,6 +73,9 @@ const Home: NextPage = () => {
     setSecondVideo(true);
     setFirstVideo(false);
   };
+
+  const fetchingNext = castVote.isLoading || isLoading;
+
   return (
     <>
       <Head>
@@ -102,8 +113,12 @@ const Home: NextPage = () => {
           )}
           {songPair && (
             <div className="animate-fade-in grid grid-cols-3 gap-24 ">
-              <div className="flex h-full w-full flex-col justify-center">
-                <div className="flex flex-col gap-4 text-center transition-opacity">
+              <div
+                className={`flex h-full w-full flex-col justify-center transition-opacity ${
+                  fetchingNext && "opacity-0"
+                } duration-300 ease-in`}
+              >
+                <div className={`flex flex-col gap-4 text-center `}>
                   {firstVideo ? (
                     <iframe
                       width={400}
@@ -127,7 +142,7 @@ const Home: NextPage = () => {
                       loading="lazy"
                     />
                   )}
-                  <p className="font-robotoMono text-sm font-bold font-semibold text-rose-400 sm:text-lg">
+                  <p className="font-robotoMono text-sm font-bold font-semibold  text-rose-400 sm:text-lg">
                     {songPair.firstSong?.title} by {songPair.firstSong?.artist}
                   </p>
                 </div>
@@ -144,8 +159,14 @@ const Home: NextPage = () => {
               </div>
               <h3 className="flex justify-center text-lg">vs.</h3>
 
-              <div className="flex w-full flex-col justify-center">
-                <div className=" flex w-full flex-col justify-center gap-4 text-center align-middle">
+              <div
+                className={`flex w-full flex-col justify-center transition-opacity ${
+                  fetchingNext && "opacity-0"
+                } duration-300 ease-in-out`}
+              >
+                <div
+                  className={`flex w-full flex-col justify-center gap-4 text-center align-middle `}
+                >
                   {secondVideo ? (
                     <iframe
                       width={400}
@@ -186,6 +207,38 @@ const Home: NextPage = () => {
               </div>
             </div>
           )}
+          <div className="absolute bottom-4  flex items-center justify-center">
+            <Link className="font-robotoMono  text-rose-400" href={"/results"}>
+              Results
+            </Link>
+            <div className="font-robotoMono text-rose-400">|</div>
+            <Link href={"/results"} className="font-robotoMono text-rose-400">
+              Leaderboard
+            </Link>
+            <div className="font-robotoMono text-rose-400">|</div>
+            <Link href={"/about"} className="font-robotoMono text-rose-400">
+              About
+            </Link>
+            <div className="font-robotoMono text-rose-400">|</div>
+            <a
+              className="font-robotoMono text-rose-400"
+              target="_blank"
+              href="https://github.com/Davi-web/rank-music"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+            <UserButton
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: {
+                    width: "2rem",
+                    height: "2rem",
+                  },
+                },
+              }}
+            />
+          </div>
         </div>
       </main>
     </>
@@ -203,18 +256,6 @@ const AuthShowcase: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <div className="flex items-center justify-center">
-        <UserButton
-          appearance={{
-            elements: {
-              userButtonAvatarBox: {
-                width: "3rem",
-                height: "3rem",
-              },
-            },
-          }}
-        />
-      </div>
       {isSignedIn && (
         <>
           <p className="font-robotoMono text-center text-2xl font-semibold text-rose-400">
