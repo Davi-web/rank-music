@@ -242,10 +242,6 @@ const Home: NextPage = () => {
                     height: "2rem",
                     borderRadius: "50%",
                   },
-                  userButtonAvatarImage: {
-                    width: "2rem",
-                    height: "2rem",
-                  },
                 },
               }}
             />
