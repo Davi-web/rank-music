@@ -20,7 +20,7 @@ export const songRouter = router({
     //get the current date formatted as YYYY-MM-DD
     return ctx.prisma.song.findMany();
   }),
-  getTwoSongs: protectedProcedure.query(async ({ ctx }) => {
+  getTwoSongs: protectedProcedure.input(z.object({})).query(async ({ ctx }) => {
     const [first, second] = getOptionsForVote();
     if (first !== undefined && second !== undefined) {
       const bothSongs = await ctx.prisma.song.findMany({
