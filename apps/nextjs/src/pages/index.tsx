@@ -29,13 +29,10 @@ const Home: NextPage = () => {
     data: songPair,
     refetch,
     isLoading,
-  } = trpc.song.getTwoSongs.useQuery(
-    {},
-    {
-      refetchOnWindowFocus: false,
-      enabled: fetch,
-    },
-  );
+  } = trpc.song.getTwoSongs.useQuery("", {
+    refetchOnWindowFocus: false,
+    enabled: fetch,
+  });
 
   const castVote = trpc.song.voteForSong.useMutation();
 
