@@ -135,7 +135,7 @@ const Home: NextPage = () => {
                     />
                   ) : (
                     <motion.div
-                      variants={staggerContainer}
+                      variants={staggerContainer as any}
                       initial="hidden"
                       whileInView="show"
                       viewport={{ once: true, amount: 0.25 }}
@@ -192,7 +192,7 @@ const Home: NextPage = () => {
                     />
                   ) : (
                     <motion.div
-                      variants={staggerContainer}
+                      variants={staggerContainer as any}
                       initial="hidden"
                       whileInView="show"
                       viewport={{ once: false, amount: 0.25 }}
