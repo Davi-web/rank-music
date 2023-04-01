@@ -2,25 +2,6 @@ import { NextPage } from "next";
 import React from "react";
 import Link from "next/link";
 import { useAuth, UserButton } from "@clerk/nextjs";
-import { motion } from "framer-motion";
-import {
-  textContainer,
-  textVariant2,
-  staggerContainer,
-  fadeIn,
-} from "../utils/motion";
-export const TypingText = ({ title, textStyles }) => (
-  <motion.p
-    variants={textContainer}
-    className={`text-secondary-white text-[14px] font-normal ${textStyles}`}
-  >
-    {Array.from(title).map((letter, index) => (
-      <motion.span variants={textVariant2} key={index}>
-        {letter === " " ? "\u00A0" : letter}
-      </motion.span>
-    ))}
-  </motion.p>
-);
 
 const About: NextPage = () => {
   return (
