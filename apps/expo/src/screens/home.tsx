@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FlashList } from "@shopify/flash-list";
 import type { inferProcedureOutput } from "@trpc/server";
 import type { AppRouter } from "@acme/api";
+import { Motion } from "@legendapp/motion/styled";
 
 import { trpc } from "../utils/trpc";
 
@@ -75,40 +76,25 @@ const CreatePost: React.FC = () => {
 export const HomeScreen = () => {
   const postQuery = trpc.post.all.useQuery();
   const [showPost, setShowPost] = React.useState<string | null>(null);
+  const value = 200;
 
   return (
-    <SafeAreaView className="bg-[#2e026d] bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+    <SafeAreaView className="bg-white bg-gradient-to-b from-[#ce10ab] to-[#dfa8c6]">
+      <Motion.View
+        className="items-center justify-center bg-black p-4"
+        animate={{ x: value * 50 }}
+      >
+        <Motion.Text className="font-bold text-white">RN View</Motion.Text>
+      </Motion.View>
+      <Motion.View
+        className="mt-8 items-center justify-center p-4"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ x: 30 }}
+      >
+        <Motion.Text className="font-bold text-white">Press me</Motion.Text>
+      </Motion.View>
       <View className="h-full w-full p-4">
-        <Text className="mx-auto pb-2 text-5xl font-bold text-white">
-          Create <Text className="text-[#cc66ff]">T3</Text> Turbo
-        </Text>
-
-        <View className="py-2">
-          {showPost ? (
-            <Text className="text-white">
-              <Text className="font-semibold">Selected post:</Text>
-              {showPost}
-            </Text>
-          ) : (
-            <Text className="font-semibold italic text-white">
-              Press on a post
-            </Text>
-          )}
-        </View>
-
-        <FlashList
-          data={postQuery.data}
-          estimatedItemSize={20}
-          ItemSeparatorComponent={() => <View className="h-2" />}
-          renderItem={(p) => (
-            <TouchableOpacity onPress={() => setShowPost(p.item.id)}>
-              <PostCard post={p.item} />
-            </TouchableOpacity>
-          )}
-        />
-
-        <CreatePost />
-        <SignOut />
+        <Text>Hello</Text>
       </View>
     </SafeAreaView>
   );

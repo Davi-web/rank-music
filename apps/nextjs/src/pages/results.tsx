@@ -3,6 +3,8 @@ import { prisma } from "../../../../packages/db/index";
 import React from "react";
 import { inferAsyncReturnType } from "@trpc/server";
 import Image from "next/image";
+import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 import { useTable } from "react-table";
 
 const GetSongsInOrder = async () => {
@@ -18,6 +20,7 @@ const GetSongsInOrder = async () => {
       cover: true,
       artist: true,
       title: true,
+      videoId: true,
       _count: {
         select: {
           voteFor: true,
@@ -41,64 +44,45 @@ const generateCountPercentage = (song: SongResultsQuery[number]) => {
 const ResultsPage: React.FC<{
   songs: inferAsyncReturnType<typeof GetSongsInOrder>;
 }> = (props) => {
+  console.log(props.songs);
   return (
-    <div className=" to-[[hsl(280,100%,70%)] flex flex-col  items-center bg-gradient-to-b from-[#6615d7] bg-fixed ">
+    <div className=" to-[[hsl(280,100%,70%)] flex h-screen  w-screen flex-col items-center bg-gradient-to-b  from-[#6615d7] bg-fixed">
       <table className=" m-4 table-auto rounded-tl-full rounded-br-full  bg-gradient-to-b from-green-300 to-green-50 bg-fixed">
-        <thead className="border-b-[1px] border-dashed border-rose-400 ">
-          <tr className="font-robotoMono text-center font-bold text-rose-400 sm:text-2xl  ">
-            <th className="border-r-[1px] border-dashed border-rose-400 px-8">
-              Rankings
-            </th>
-            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
-              Billboards Rankings
-            </th>
-            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
-              Cover
-            </th>
-            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
-              Song
-            </th>
-            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
-              Artist
-            </th>
-            <th className="border-r-[1px] border-dashed border-rose-400 px-8 ">
-              Total Votes
-            </th>
+        <thead className="bg-purple-rgba border-b-[1px]  border-rose-400 ">
+          <tr className="font-robotoMono text-center font-semibold text-indigo-700 sm:text-2xl  ">
+            <th className=" px-8">Rankings</th>
+            <th className=" px-8 ">Billboards Rankings</th>
+            <th className=" px-8 ">Cover</th>
+            <th className=" px-8 ">Song</th>
+            <th className=" px-8 ">Artist</th>
+            <th className=" px-8 ">Total Votes</th>
             <th className=" px-8 ">Pick Rate</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-purple-rgba">
           {props.songs.map((song, index) => {
             return (
               <tr
-                className="md:text-md font-robotoMono sm:text-md border-b-[1px] border-dashed border-rose-400 text-center text-xs font-semibold  text-rose-400 sm:text-lg"
+                className="md:text-md font-robotoMono sm:text-md text-center text-xs  text-indigo-600 sm:text-lg"
                 key={index}
               >
-                <td className="border-r-[1px] border-dashed border-rose-400">
-                  {index + 1}
+                <td className="">{index + 1}</td>
+                <td className="">{song.rank}</td>
+                <td className="flex justify-center ">
+                  <a href={`https://www.youtube.com/watch?v=${song.videoId}`}>
+                    <Image
+                      src={song.cover}
+                      width={100}
+                      height={100}
+                      alt="hello"
+                      loading="lazy"
+                      className=" m-4 h-12 w-12 rounded-full shadow-md sm:h-[100px] sm:w-[100px]"
+                    />
+                  </a>
                 </td>
-                <td className="border-r-[1px] border-dashed border-rose-400">
-                  {song.rank}
-                </td>
-                <td className="flex justify-center border-r-[1px] border-dashed border-rose-400">
-                  <Image
-                    src={song.cover}
-                    width={100}
-                    height={100}
-                    alt="hello"
-                    loading="lazy"
-                    className=" m-4 rounded-full shadow-md"
-                  />
-                </td>
-                <td className="border-r-[1px] border-dashed border-rose-400">
-                  {song.title}
-                </td>
-                <td className="border-r-[1px] border-dashed border-rose-400">
-                  {song.artist}
-                </td>
-                <td className="border-r-[1px] border-dashed border-rose-400">
-                  {song._count.voteFor}
-                </td>
+                <td className="">{song.title}</td>
+                <td className="">{song.artist}</td>
+                <td className="">{song._count.voteFor}</td>
                 <td className="">
                   {generateCountPercentage(song).toFixed(2)}%
                 </td>
@@ -107,6 +91,45 @@ const ResultsPage: React.FC<{
           })}
         </tbody>
       </table>
+      <div className="fixed bottom-4  flex items-center justify-center">
+        <Link className="font-robotoMono  text-rose-400" href={"/"}>
+          Home
+        </Link>
+        <div className="font-robotoMono text-rose-400">|</div>
+        <Link href={"/results"} className="font-robotoMono text-rose-400">
+          Leaderboard
+        </Link>
+        <div className="font-robotoMono text-rose-400">|</div>
+        <Link href={"/about"} className="font-robotoMono text-rose-400">
+          About
+        </Link>
+        <div className="font-robotoMono text-rose-400">|</div>
+        <a
+          className="font-robotoMono text-rose-400"
+          target="_blank"
+          href="https://github.com/Davi-web/rank-music"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
+        <div className="font-robotoMono text-rose-400">|</div>
+        <UserButton
+          appearance={{
+            elements: {
+              userButtonAvatarBox: {
+                width: "2rem",
+                height: "2rem",
+                borderRadius: "50%",
+              },
+              userButtonBox: {
+                width: "2rem",
+                height: "2rem",
+                borderRadius: "50%",
+              },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 };

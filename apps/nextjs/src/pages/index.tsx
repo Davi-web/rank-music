@@ -7,7 +7,8 @@ import { useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { slideIn, staggerContainer } from "../utils/motion.js";
+import { motion } from "framer-motion";
 
 const PostCard: React.FC<{
   post: inferProcedureOutput<AppRouter["post"]["all"]>[number];
@@ -23,24 +24,25 @@ const PostCard: React.FC<{
 };
 
 const Home: NextPage = () => {
+  const [fetch, setFetch] = useState(true);
   const {
     data: songPair,
     refetch,
     isLoading,
-  } = trpc.song.getTwoSongs.useQuery();
+  } = trpc.song.getTwoSongs.useQuery(
+    {},
+    {
+      refetchOnWindowFocus: false,
+      enabled: fetch,
+    },
+  );
 
   const castVote = trpc.song.voteForSong.useMutation();
-  const router = useRouter();
-  const { isSignedIn } = useAuth();
-  useEffect(() => {
-    if (!isSignedIn) {
-      router.push("/sign-in");
-    }
-  }, [isSignedIn]);
 
   const voteForSong = async (votedFor: number) => {
     if (!votedFor) return;
     if (!songPair?.secondSong?.rank || !songPair?.firstSong?.rank) return;
+    setFetch(false);
 
     if (votedFor === songPair?.firstSong?.rank) {
       // If voted for 1st pokemon, fire voteFor with first ID
@@ -55,10 +57,11 @@ const Home: NextPage = () => {
         votedAgainst: songPair?.firstSong?.rank,
       });
     }
-
     setFirstVideo(false);
     setSecondVideo(false);
+
     refetch();
+    setFetch(true);
   };
 
   const [firstVideo, setFirstVideo] = useState(false);
@@ -84,15 +87,16 @@ const Home: NextPage = () => {
           name="description"
           content="Vote on the best song from the Billboards Top 100 songs"
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
-        />
+        /> */}
+        <link rel="preconnect" href="https://stijndv.com" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap"
           rel="stylesheet"
+          href="https://stijndv.com/fonts/Eudoxus-Sans.css"
         />
       </Head>
       <main className=" to-[[hsl(280,100%,70%)] flex h-screen w-screen flex-col items-center bg-gradient-to-b from-[#6615d7] text-white">
@@ -108,15 +112,15 @@ const Home: NextPage = () => {
               alt="Loading"
               height={200}
               width={200}
-              className=" animate-fade-in animate-ping self-center"
+              className=" animate-fade-in self-center"
             />
           )}
           {songPair && (
-            <div className="animate-fade-in grid grid-cols-3 gap-24 ">
+            <div className="grid grid-cols-3 gap-24 ">
               <div
                 className={`flex h-full w-full flex-col justify-center transition-opacity ${
                   fetchingNext && "opacity-0"
-                } duration-300 ease-in`}
+                } duration-300 ease-out`}
               >
                 <div className={`flex flex-col gap-4 text-center `}>
                   {firstVideo ? (
@@ -130,17 +134,27 @@ const Home: NextPage = () => {
                       className="m-4 aspect-video  self-center rounded-3xl p-4"
                     />
                   ) : (
-                    <Image
-                      onClick={showFirstVideo}
-                      src={`${songPair.firstSong?.cover}`}
-                      width={200}
-                      height={200}
-                      alt="Song Cover"
-                      className={`${
-                        firstVideo || secondVideo ? "" : "animate-bounce"
-                      } m-4 self-center rounded-3xl p-4`}
-                      loading="lazy"
-                    />
+                    <motion.div
+                      variants={staggerContainer}
+                      initial="hidden"
+                      whileInView="show"
+                      viewport={{ once: true, amount: 0.25 }}
+                    >
+                      <motion.div
+                        variants={slideIn("left", "tween", 0.2, 1)}
+                        className=" flex justify-center "
+                      >
+                        <Image
+                          onClick={showFirstVideo}
+                          src={`${songPair.firstSong?.cover}`}
+                          width={200}
+                          height={200}
+                          alt="Song Cover"
+                          className={`m-4 h-full w-full self-center rounded-3xl p-4`}
+                          loading="lazy"
+                        />
+                      </motion.div>
+                    </motion.div>
                   )}
                   <p className="font-robotoMono text-sm font-bold font-semibold  text-rose-400 sm:text-lg">
                     {songPair.firstSong?.title} by {songPair.firstSong?.artist}
@@ -177,17 +191,27 @@ const Home: NextPage = () => {
                       className="m-4 aspect-video self-center rounded-3xl p-4"
                     />
                   ) : (
-                    <Image
-                      onClick={showSecondVideo}
-                      src={`${songPair.secondSong?.cover}`}
-                      width={200}
-                      height={200}
-                      alt="Song Cover"
-                      className={`${
-                        firstVideo || secondVideo ? "" : "animate-bounce"
-                      } m-4 self-center rounded-3xl p-4`}
-                      loading="lazy"
-                    />
+                    <motion.div
+                      variants={staggerContainer}
+                      initial="hidden"
+                      whileInView="show"
+                      viewport={{ once: false, amount: 0.25 }}
+                    >
+                      <motion.div
+                        variants={slideIn("right", "tween", 0.2, 1)}
+                        className=" flex justify-center "
+                      >
+                        <Image
+                          onClick={showSecondVideo}
+                          src={`${songPair.secondSong?.cover}`}
+                          width={200}
+                          height={200}
+                          alt="Song Cover"
+                          className={` m-4 h-full w-full self-center rounded-3xl p-4`}
+                          loading="lazy"
+                        />
+                      </motion.div>
+                    </motion.div>
                   )}
                   <p className=" font-robotoMono text-sm font-semibold text-rose-400 sm:text-lg">
                     {songPair.secondSong?.title} by{" "}
@@ -208,8 +232,8 @@ const Home: NextPage = () => {
             </div>
           )}
           <div className="absolute bottom-4  flex items-center justify-center">
-            <Link className="font-robotoMono  text-rose-400" href={"/results"}>
-              Results
+            <Link className="font-robotoMono  text-rose-400" href={"/"}>
+              Home
             </Link>
             <div className="font-robotoMono text-rose-400">|</div>
             <Link href={"/results"} className="font-robotoMono text-rose-400">

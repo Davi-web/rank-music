@@ -16,12 +16,16 @@
     "ts-node": "ts-node --compiler-options '{\"module\":\"commonjs\"}'"
   },
   "dependencies": {
+    "@legendapp/motion": "^2.2.0",
     "@manypkg/cli": "^0.19.2",
+    "@types/react": "^18.0.25",
+    "@types/react-native": "~0.70.6",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "axios": "^1.3.4",
     "billboard-top-100": "^2.6.5",
     "eslint": "^8.28.0",
+    "framer-motion": "^10.8.5",
     "prettier": "^2.8.3",
     "prettier-plugin-tailwindcss": "^0.1.13",
     "react-table": "^7.8.0",

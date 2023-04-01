@@ -8,6 +8,9 @@ module.exports = {
       robotoMono: ["Roboto Mono", "monospace"],
     },
     extend: {
+      backgroundColor: {
+        "purple-rgba": "rgba(186,104,200,0.5)",
+      },
       keyframes: {
         "fade-in": {
           "0%": {

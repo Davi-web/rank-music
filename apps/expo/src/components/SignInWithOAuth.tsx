@@ -140,7 +140,7 @@ const SignInWithOAuth = () => {
   };
 
   return (
-    <View className="flex h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+    <View className=" flex h-screen flex-col  items-center bg-transparent text-white">
       <Text className="mt-8 p-8 text-2xl font-bold">Sign in with OAuth</Text>
       <Button
         title="Sign in with Discord"
@@ -150,6 +150,7 @@ const SignInWithOAuth = () => {
         title="Sign in with Google"
         onPress={handleSignInWithGooglePress}
       />
+      <Button title="Hello" />
     </View>
   );
 };
