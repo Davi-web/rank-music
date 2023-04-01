@@ -46,8 +46,8 @@ const ResultsPage: React.FC<{
 }> = (props) => {
   console.log(props.songs);
   return (
-    <div className=" to-[[hsl(280,100%,70%)] flex h-screen  w-screen flex-col items-center bg-gradient-to-b  from-[#6615d7] bg-fixed">
-      <table className=" m-4 table-auto rounded-tl-full rounded-br-full  bg-gradient-to-b from-green-300 to-green-50 bg-fixed">
+    <div className=" to-[[hsl(280,100%,70%)] min-w-screen flex h-[100%] w-screen  items-center bg-gradient-to-b  from-[#6615d7] bg-fixed">
+      <table className=" m-4 w-full table-auto rounded-tl-full  rounded-br-full bg-gradient-to-b from-green-300 to-green-50 bg-fixed">
         <thead className="bg-purple-rgba border-b-[1px]  border-rose-400 ">
           <tr className="font-robotoMono text-center font-semibold text-indigo-700 sm:text-2xl  ">
             <th className=" px-8">Rankings</th>
@@ -91,7 +91,7 @@ const ResultsPage: React.FC<{
           })}
         </tbody>
       </table>
-      <div className="fixed bottom-4  flex items-center justify-center">
+      <div className="fixed bottom-4 flex  w-full items-center justify-center">
         <Link className="font-robotoMono  text-rose-400" href={"/"}>
           Home
         </Link>
